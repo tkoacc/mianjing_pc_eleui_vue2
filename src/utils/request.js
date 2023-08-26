@@ -1,5 +1,6 @@
 // 封装axios用于发送请求
 import axios from 'axios'
+import { Message } from 'element-ui'
 
 const request = axios.create({
   baseURL: 'http://interview-api-t.itheima.net/', // 你的API基础URL
@@ -24,6 +25,9 @@ request.interceptors.response.use(
     return response.data
   }, error => {
     // 对响应错误做点什么
+    if (error.response) {
+      Message.error(error.response.data.message)
+    }
     return Promise.reject(error)
   }
 )

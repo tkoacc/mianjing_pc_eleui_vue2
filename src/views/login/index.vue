@@ -64,9 +64,14 @@ export default {
   methods: {
     login() {
       // 兜底校验，如果校验失败,不会继续往下执行
-      this.$refs.form.validate((valid) => {
+      this.$refs.form.validate(async (valid) => {
         if (!valid) return
-        this.$store.dispatch('user/loginAction', this.form)
+        // 一定要加await
+        await this.$store.dispatch('user/loginAction', this.form)
+        // Navigate to homepage
+        this.$router.push('/')
+        // Login Successful Message
+        this.$message.success('login successful')
       })
     },
     reset() {
