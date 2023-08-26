@@ -65,7 +65,8 @@ export default {
     login() {
       // 兜底校验，如果校验失败,不会继续往下执行
       this.$refs.form.validate((valid) => {
-        if (!valid) return false
+        if (!valid) return
+        this.$store.dispatch('user/loginAction', this.form)
       })
     },
     reset() {
