@@ -1,13 +1,76 @@
 <template>
-  <div>
-    <div>layout</div>
-    <router-view></router-view>
-  </div>
+  <el-container class="layout-page">
+    <el-aside width="200px">
+      <div class="logo">黑马面经</div>
+      <el-menu
+        router
+        :default-active="$route.path"
+        background-color="#313a46"
+        text-color="#8391a2"
+        active-text-color="#FFF"
+      >
+        <el-menu-item index="/dashboard">
+          <i class="el-icon-pie-chart"></i>
+          <span>数据看板</span>
+        </el-menu-item>
+        <el-menu-item index="/article">
+          <i class="el-icon-notebook-1"></i>
+          <span>面经管理</span>
+        </el-menu-item>
+      </el-menu>
+    </el-aside>
+    <el-container>
+      <el-header>
+        <div class="user">
+          <el-avatar :size="36" :src="avatar"></el-avatar>
+          <el-link :underline="false">{{ name }}</el-link>
+        </div>
+        <div class="logout">
+          <el-popconfirm
+            title="您确认退出黑马面运营后台吗？"
+            @confirm="handleConfirm"
+          >
+            <i
+              slot="reference"
+              title="logout"
+              class="el-icon-switch-button"
+            ></i>
+          </el-popconfirm>
+        </div>
+      </el-header>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
+import { getUser } from '@/api/user'
 export default {
-  name: 'layout-page'
+  name: 'layout-page',
+  data() {
+    return {
+      avatar: '',
+      name: ''
+    }
+  },
+  async created() {
+    // 获取用户信息
+    const { data } = await getUser()
+    this.avatar = data.avatar
+    this.name = data.name
+  },
+  methods: {
+    // 退出登录
+    handleConfirm() {
+      // 通过vuex清除token
+      this.$store.commit('user/logout')
+      // 跳转到登录
+      this.$router.push('/login')
+      this.$message.success('logout success')
+    }
+  }
 }
 </script>
 

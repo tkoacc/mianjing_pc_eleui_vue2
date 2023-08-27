@@ -1,4 +1,5 @@
 // 封装axios用于发送请求
+import store from '@/store'
 import axios from 'axios'
 import { Message } from 'element-ui'
 
@@ -11,6 +12,11 @@ const request = axios.create({
 request.interceptors.request.use(
   config => {
     // 在发送请求之前做些什么
+    const token = store.state.user.token
+    if (token) {
+      // 携带token
+      config.headers.Authorization = `Bearer ${token}`
+    }
     return config
   }, error => {
     // 对请求错误做些什么
