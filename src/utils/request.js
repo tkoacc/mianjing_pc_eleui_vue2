@@ -1,4 +1,5 @@
 // 封装axios用于发送请求
+import router from '@/router'
 import store from '@/store'
 import axios from 'axios'
 import { Message } from 'element-ui'
@@ -32,7 +33,16 @@ request.interceptors.response.use(
   }, error => {
     // 对响应错误做点什么
     if (error.response) {
-      Message.error(error.response.data.message)
+      if (error.response.status === 401) {
+        // remove token
+        store.commit('user/logout')
+        // redirect to login page
+        router.push('/login')
+        // display a notification message
+        Message.error('please re-login')
+      } else {
+        Message.error(error.response.data.message)
+      }
     }
     return Promise.reject(error)
   }
