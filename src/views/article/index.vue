@@ -9,7 +9,13 @@
       <template #header>
         <div class="header">
           <span>共 {{ total }} 条记录</span>
-          <el-button icon="el-icon-plus" size="small" type="primary" round>
+          <el-button
+            @click="open('add')"
+            icon="el-icon-plus"
+            size="small"
+            type="primary"
+            round
+          >
             添加面经
           </el-button>
         </div>
@@ -24,8 +30,8 @@
         <el-table-column label="Operation" width="120px">
           <template #default="{ row }">
             <div class="actions">
-              <i class="el-icon-view"></i>
-              <i class="el-icon-edit"></i>
+              <i @click="open('preview', row.id)" class="el-icon-view"></i>
+              <i @click="open('edit', row.id)" class="el-icon-edit"></i>
               <i @click="del(row.id)" class="el-icon-delete"></i>
             </div>
           </template>
@@ -43,6 +49,16 @@
       >
       </el-pagination>
     </el-card>
+    <!-- 抽屉 -->
+    <el-drawer
+      title="我是标题"
+      size="70%"
+      :visible.sync="drawer"
+      :direction="direction"
+      :before-close="handleClose"
+    >
+      <span>我来啦!</span>
+    </el-drawer>
   </div>
 </template>
 
@@ -55,7 +71,9 @@ export default {
       current: 1,
       pageSize: 10,
       list: [],
-      total: 0
+      total: 0,
+      drawer: false,
+      direction: 'rtl'
     }
   },
   created() {
@@ -83,6 +101,17 @@ export default {
       this.current = val
       // Refresh data
       this.initData()
+    },
+    open(type, id) {
+      // display drawer
+      this.drawer = true
+    },
+    handleClose(done) {
+      this.$confirm('Confirm closure?')
+        .then((_) => {
+          done()
+        })
+        .catch((_) => {})
     }
   }
 }
