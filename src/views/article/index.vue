@@ -51,13 +51,25 @@
     </el-card>
     <!-- 抽屉 -->
     <el-drawer
-      title="我是标题"
+      :title="title[type]"
       size="70%"
       :visible.sync="drawer"
       :direction="direction"
       :before-close="handleClose"
     >
-      <span>我来啦!</span>
+      <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="title">
+          <el-input
+            placeholder="please input title"
+            v-model="form.stem"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="title"> Rich text editor </el-form-item>
+        <el-form-item>
+          <el-button type="primary">confirm</el-button>
+          <el-button>cancle</el-button>
+        </el-form-item>
+      </el-form>
     </el-drawer>
   </div>
 </template>
@@ -68,12 +80,23 @@ export default {
   name: 'article-page',
   data() {
     return {
+      form: {
+        stem: '',
+        content: ''
+      },
       current: 1,
       pageSize: 10,
       list: [],
       total: 0,
       drawer: false,
-      direction: 'rtl'
+      direction: 'rtl',
+      // Drawer status, possible values: 'add', 'edit', 'preview'
+      type: 'add',
+      title: {
+        add: 'add',
+        edit: 'edit',
+        preview: 'preview'
+      }
     }
   },
   created() {
@@ -105,6 +128,8 @@ export default {
     open(type, id) {
       // display drawer
       this.drawer = true
+      // set the type
+      this.type = type
     },
     handleClose(done) {
       this.$confirm('Confirm closure?')
@@ -114,6 +139,16 @@ export default {
         .catch((_) => {})
     }
   }
+  // computed: {
+  //   title() {
+  //     const titles = {
+  //       add: 'add',
+  //       edit: 'edit',
+  //       preview: 'preview'
+  //     }
+  //     return titles[this.type] || ''
+  //   }
+  // }
 }
 </script>
 
