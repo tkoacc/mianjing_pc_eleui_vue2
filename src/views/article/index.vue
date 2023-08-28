@@ -32,6 +32,16 @@
         </el-table-column>
       </el-table>
       <!-- 3.分页组件 -->
+      <el-pagination
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="current"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
     </el-card>
   </div>
 </template>
@@ -63,6 +73,16 @@ export default {
     },
     del(id) {
       console.log(id)
+    },
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.initData()
+    },
+    handleCurrentChange(val) {
+      // Modify page number
+      this.current = val
+      // Refresh data
+      this.initData()
     }
   }
 }
