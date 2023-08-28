@@ -16,11 +16,20 @@
       </template>
       <!-- 2.表格 -->
       <el-table :data="list" style="width: 100%">
-        <el-table-column prop="stem" label="title"></el-table-column>
-        <el-table-column prop="creator" label="author"></el-table-column>
-        <el-table-column prop="likeCount" label="like"></el-table-column>
-        <el-table-column prop="views" label="views"></el-table-column>
-        <el-table-column prop="createdAt" label="updatedTime"></el-table-column>
+        <el-table-column prop="stem" label="Title"></el-table-column>
+        <el-table-column prop="creator" label="Author"></el-table-column>
+        <el-table-column prop="likeCount" label="Like"></el-table-column>
+        <el-table-column prop="views" label="Views"></el-table-column>
+        <el-table-column prop="createdAt" label="UpdatedTime"></el-table-column>
+        <el-table-column label="Operation" width="120px">
+          <template #default="{ row }">
+            <div class="actions">
+              <i class="el-icon-view"></i>
+              <i class="el-icon-edit"></i>
+              <i @click="del(row.id)" class="el-icon-delete"></i>
+            </div>
+          </template>
+        </el-table-column>
       </el-table>
       <!-- 3.分页组件 -->
     </el-card>
@@ -51,6 +60,9 @@ export default {
       // store the data in the 'data'
       this.list = data.rows
       this.total = data.total
+    },
+    del(id) {
+      console.log(id)
     }
   }
 }
