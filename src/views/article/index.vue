@@ -90,7 +90,13 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
 import { quillEditor } from 'vue-quill-editor'
-import { addArticle, getArticleList, removeArticle } from '@/api/article'
+import {
+  addArticle,
+  getArticleDetail,
+  getArticleList,
+  removeArticle,
+  updateArticle
+} from '@/api/article'
 export default {
   name: 'article-page',
   components: {
@@ -166,11 +172,18 @@ export default {
       // Refresh data
       this.initData()
     },
-    open(type, id) {
+    async open(type, id) {
       // display drawer
       this.drawer = true
       // set the type
       this.type = type
+      // send a request to get the article detail
+      if (type !== 'add') {
+        const { data } = await getArticleDetail(id)
+        console.log(data)
+        // data echo
+        this.form = { ...data }
+      }
     },
     handleClose() {
       this.$confirm('Confirm closure?')
@@ -182,42 +195,36 @@ export default {
     async submit() {
       // validate the form
       await this.$refs.form.validate()
-      // send a request
-      await addArticle(this.form)
-      // notify the user
-      this.$message.success('add success')
+      // check if type is add or edit
+      if (this.type === 'add') {
+        // send a request
+        await addArticle(this.form)
+        // notify the user
+        this.$message.success('add success')
+        // go back to the first page
+        this.current = 1
+      } else if (this.type === 'edit') {
+        const { id, stem, content } = this.form
+        // send a request
+        await updateArticle({ id, stem, content })
+        // notify the user
+        this.$message.success('edit success')
+      }
       // close the drawer and reset the form
       this.closeDrawer()
-      // go back to the first page
-      this.current = 1
       // rerender the page
       this.initData()
     },
-    // async submit() {
-    //   try {
-    //     // validate the form
-    //     const valid = await this.$refs.form.validate()
-    //     if (!valid) return
-    //     // send a request
-    //     await addArticle(this.form)
-    //     // notify the user
-    //     this.$message.success('add success')
-    //     // close the drawer
-    //     this.drawer = false
-    //     // go back to the first page
-    //     this.current = 1
-    //     // rerender the page
-    //     this.initData()
-    //   } catch (error) {
-    //     console.error(error)
-    //     this.$message.error('Something went wrong')
-    //   }
-    // }
     closeDrawer() {
       // close the drawer
       this.drawer = false
       // reset the form
       this.$refs.form.resetFields()
+      // reset form data object
+      this.form = {
+        stem: '',
+        content: ''
+      }
     }
   }
 }
