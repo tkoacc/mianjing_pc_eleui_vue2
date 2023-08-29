@@ -6,7 +6,6 @@ import '@/utils/element.js'
 import '@/styles/element-variables.scss'
 // 重置样式
 import 'normalize.css'
-
 Vue.config.productionTip = false
 
 new Vue({

@@ -58,13 +58,15 @@
       :before-close="handleClose"
     >
       <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="title">
+        <el-form-item label="title" prop="stem">
           <el-input
             placeholder="please input title"
             v-model="form.stem"
           ></el-input>
         </el-form-item>
-        <el-form-item label="title"> Rich text editor </el-form-item>
+        <el-form-item label="content" prop="content">
+          <quill-editor v-model="form.content"></quill-editor>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary">confirm</el-button>
           <el-button>cancle</el-button>
@@ -75,9 +77,18 @@
 </template>
 
 <script>
+// require styles
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+import { quillEditor } from 'vue-quill-editor'
 import { getArticleList } from '@/api/article'
 export default {
   name: 'article-page',
+  components: {
+    quillEditor
+  },
   data() {
     return {
       form: {
@@ -139,16 +150,6 @@ export default {
         .catch((_) => {})
     }
   }
-  // computed: {
-  //   title() {
-  //     const titles = {
-  //       add: 'add',
-  //       edit: 'edit',
-  //       preview: 'preview'
-  //     }
-  //     return titles[this.type] || ''
-  //   }
-  // }
 }
 </script>
 
