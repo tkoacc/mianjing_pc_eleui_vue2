@@ -192,7 +192,6 @@ export default {
       // send a request to get the article detail
       if (type !== 'add') {
         const { data } = await getArticleDetail(id)
-        console.log(data)
         // data echo
         this.form = { ...data }
       }
