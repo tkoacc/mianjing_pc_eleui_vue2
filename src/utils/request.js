@@ -5,7 +5,7 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 
 const request = axios.create({
-  baseURL: 'http://interview-api-t.itheima.net/', // 你的API基础URL
+  baseURL: 'https://interview-api-t.itheima.net/', // 你的API基础URL
   timeout: 5000 // 请求超时时间
 })
 
