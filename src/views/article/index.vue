@@ -57,7 +57,19 @@
       :direction="direction"
       :before-close="handleClose"
     >
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <!-- form preview -->
+      <div class="article-preview" v-if="type === 'preview'">
+        <h5>{{ form.stem }}</h5>
+        <div v-html="form.content"></div>
+      </div>
+      <!-- form -->
+      <el-form
+        v-else
+        ref="form"
+        :model="form"
+        :rules="rules"
+        label-width="80px"
+      >
         <el-form-item label="title" prop="stem">
           <el-input
             placeholder="please input title"
@@ -190,7 +202,9 @@ export default {
         .then((_) => {
           this.closeDrawer()
         })
-        .catch((_) => {})
+        .catch((e) => {
+          console.log(e)
+        })
     },
     async submit() {
       // validate the form
@@ -219,7 +233,7 @@ export default {
       // close the drawer
       this.drawer = false
       // reset the form
-      this.$refs.form.resetFields()
+      this.$refs.form && this.$refs.form.resetFields()
       // reset form data object
       this.form = {
         stem: '',
