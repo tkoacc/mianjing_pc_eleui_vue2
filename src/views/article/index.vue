@@ -172,22 +172,40 @@ export default {
         })
         .catch((_) => {})
     },
-    submit() {
+    async submit() {
       // validate the form
-      this.$refs.form.validate(async (valid) => {
-        if (!valid) return
-        // send a request
-        await addArticle(this.form)
-        // notify the user
-        this.$message.success('add success')
-        // close the drawer
-        this.drawer = false
-        // go back to the first page
-        this.current = 1
-        // rerender the page
-        this.initData()
-      })
+      await this.$refs.form.validate()
+      // send a request
+      await addArticle(this.form)
+      // notify the user
+      this.$message.success('add success')
+      // close the drawer
+      this.drawer = false
+      // go back to the first page
+      this.current = 1
+      // rerender the page
+      this.initData()
     }
+    // async submit() {
+    //   try {
+    //     // validate the form
+    //     const valid = await this.$refs.form.validate()
+    //     if (!valid) return
+    //     // send a request
+    //     await addArticle(this.form)
+    //     // notify the user
+    //     this.$message.success('add success')
+    //     // close the drawer
+    //     this.drawer = false
+    //     // go back to the first page
+    //     this.current = 1
+    //     // rerender the page
+    //     this.initData()
+    //   } catch (error) {
+    //     console.error(error)
+    //     this.$message.error('Something went wrong')
+    //   }
+    // }
   }
 }
 </script>
