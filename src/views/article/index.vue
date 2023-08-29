@@ -57,7 +57,7 @@
       :direction="direction"
       :before-close="handleClose"
     >
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="title" prop="stem">
           <el-input
             placeholder="please input title"
@@ -65,10 +65,17 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="content" prop="content">
-          <quill-editor v-model="form.content"></quill-editor>
+          <!-- manual validation upon losing focus -->
+          <!-- 非elementui的组件都无法直接进行校验，需要在失去焦点的时候手动调用form.validateField方法进行校验 -->
+          <!-- Components outside of ElementUI cannot be automatically validated.
+          Validation needs to be manually triggered by calling the form.validateField method upon losing focus. -->
+          <quill-editor
+            @blur="$refs.form.validateField('content')"
+            v-model="form.content"
+          ></quill-editor>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">confirm</el-button>
+          <el-button @click="submit" type="primary">confirm</el-button>
           <el-button>cancle</el-button>
         </el-form-item>
       </el-form>
@@ -83,7 +90,7 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
 import { quillEditor } from 'vue-quill-editor'
-import { getArticleList } from '@/api/article'
+import { addArticle, getArticleList } from '@/api/article'
 export default {
   name: 'article-page',
   components: {
@@ -107,6 +114,22 @@ export default {
         add: 'add',
         edit: 'edit',
         preview: 'preview'
+      },
+      rules: {
+        stem: [
+          {
+            required: true,
+            message: 'Please input title',
+            trigger: ['blur', 'change']
+          }
+        ],
+        content: [
+          {
+            required: true,
+            message: 'Please input content',
+            trigger: ['blur', 'change']
+          }
+        ]
       }
     }
   },
@@ -148,6 +171,22 @@ export default {
           done()
         })
         .catch((_) => {})
+    },
+    submit() {
+      // validate the form
+      this.$refs.form.validate(async (valid) => {
+        if (!valid) return
+        // send a request
+        await addArticle(this.form)
+        // notify the user
+        this.$message.success('add success')
+        // close the drawer
+        this.drawer = false
+        // go back to the first page
+        this.current = 1
+        // rerender the page
+        this.initData()
+      })
     }
   }
 }
