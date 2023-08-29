@@ -90,7 +90,7 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
 import { quillEditor } from 'vue-quill-editor'
-import { addArticle, getArticleList } from '@/api/article'
+import { addArticle, getArticleList, removeArticle } from '@/api/article'
 export default {
   name: 'article-page',
   components: {
@@ -146,8 +146,15 @@ export default {
       this.list = data.rows
       this.total = data.total
     },
-    del(id) {
-      console.log(id)
+    async del(id) {
+      await removeArticle(id)
+      this.$message.success('delete success')
+      // 渲染页面之前先进行判断，如果当前页面只有一条数据，删除这条数据之后，让current-1，但是如果current=1，那么current不变
+      // Before rendering the page, make the following check: if the current page contains only one record and that record is deleted, subtract 1 from current. However, if current is already 1, leave it unchanged.
+      if (this.list.length === 1 && this.current > 1) {
+        this.current--
+      }
+      this.initData()
     },
     handleSizeChange(val) {
       this.pageSize = val
