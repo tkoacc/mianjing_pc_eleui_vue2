@@ -76,7 +76,7 @@
         </el-form-item>
         <el-form-item>
           <el-button @click="submit" type="primary">confirm</el-button>
-          <el-button>cancle</el-button>
+          <el-button @click="handleClose">cancle</el-button>
         </el-form-item>
       </el-form>
     </el-drawer>
@@ -165,10 +165,10 @@ export default {
       // set the type
       this.type = type
     },
-    handleClose(done) {
+    handleClose() {
       this.$confirm('Confirm closure?')
         .then((_) => {
-          done()
+          this.closeDrawer()
         })
         .catch((_) => {})
     },
@@ -179,13 +179,13 @@ export default {
       await addArticle(this.form)
       // notify the user
       this.$message.success('add success')
-      // close the drawer
-      this.drawer = false
+      // close the drawer and reset the form
+      this.closeDrawer()
       // go back to the first page
       this.current = 1
       // rerender the page
       this.initData()
-    }
+    },
     // async submit() {
     //   try {
     //     // validate the form
@@ -206,6 +206,12 @@ export default {
     //     this.$message.error('Something went wrong')
     //   }
     // }
+    closeDrawer() {
+      // close the drawer
+      this.drawer = false
+      // reset the form
+      this.$refs.form.resetFields()
+    }
   }
 }
 </script>
